@@ -18,8 +18,7 @@ object ImageAssertion {
      */
     data class ComparisonConfig(
         val tolerance: Double = 0.01,
-        val scalingMode: ScalingMode = ScalingMode.FIT_TO_EXPECTED,
-        val allowedPixelDifference: Int = 5
+        val scalingMode: ScalingMode = ScalingMode.FIT_TO_EXPECTED
     )
 
     /**
@@ -217,6 +216,8 @@ object ImageAssertion {
     /**
      * Check if two images are similar within the given tolerance.
      * Returns true if the difference is within tolerance, false otherwise.
+     * 
+     * @return true if images are similar, false if they differ or an error occurs
      */
     fun areImagesSimilar(
         actualImage: BufferedImage,
@@ -226,7 +227,8 @@ object ImageAssertion {
         return try {
             assertImageEquals(actualImage, expectedImage, config)
             true
-        } catch (e: AssertionError) {
+        } catch (e: Throwable) {
+            // Return false for any error - images don't match or can't be compared
             false
         }
     }
