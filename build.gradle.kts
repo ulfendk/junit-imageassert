@@ -20,6 +20,12 @@ dependencies {
     
     // Image processing libraries
     implementation("org.imgscalr:imgscalr-lib:4.2")
+    
+    // Appium support (optional - compileOnly so users can add it if needed)
+    compileOnly("io.appium:java-client:9.1.0")
+    
+    // Appium for testing
+    testImplementation("io.appium:java-client:9.1.0")
 }
 
 kotlin {
