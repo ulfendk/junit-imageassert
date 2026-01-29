@@ -8,6 +8,7 @@ A Kotlin library for JUnit that provides image assertion capabilities with built
 - **Flexible Comparison**: Multiple scaling modes to fit your testing needs
 - **Configurable Tolerance**: Adjust sensitivity for pixel-perfect or fuzzy matching
 - **JUnit Integration**: Works seamlessly with JUnit 5 tests
+- **Appium Support**: Built-in support for Appium UI element screenshot assertions
 - **Kotlin-First**: Written in Kotlin with a clean, idiomatic API
 
 ## Installation
@@ -17,6 +18,9 @@ A Kotlin library for JUnit that provides image assertion capabilities with built
 ```kotlin
 dependencies {
     testImplementation("dk.ulfen:junit-imageassert:1.0.0")
+    
+    // For Appium support, also add:
+    testImplementation("io.appium:java-client:9.1.0")
 }
 ```
 
@@ -25,6 +29,9 @@ dependencies {
 ```groovy
 dependencies {
     testImplementation 'dk.ulfen:junit-imageassert:1.0.0'
+    
+    // For Appium support, also add:
+    testImplementation 'io.appium:java-client:9.1.0'
 }
 ```
 
@@ -156,6 +163,104 @@ if (isSimilar) {
     println("Images match!")
 } else {
     println("Images differ")
+}
+```
+
+## Appium UI Element Testing
+
+The library includes built-in support for Appium UI element testing with automatic screenshot capture.
+
+### Basic Appium Element Testing
+
+```kotlin
+import dk.ulfen.imageassert.appium.AppiumImageAssertion
+import io.appium.java_client.AppiumDriver
+import org.openqa.selenium.By
+import org.openqa.selenium.WebElement
+import java.io.File
+
+@Test
+fun `test mobile button appearance`() {
+    // Your Appium driver
+    val driver: AppiumDriver = getAppiumDriver()
+    
+    // Find the UI element
+    val button: WebElement = driver.findElement(By.id("login-button"))
+    
+    // Expected image file
+    val expectedFile = File("src/test/resources/expected-login-button.png")
+    
+    // Assert element matches expected image
+    // The library automatically captures the element screenshot
+    AppiumImageAssertion.assertElementImageEquals(button, driver, expectedFile)
+}
+```
+
+### Testing Across Different Devices
+
+```kotlin
+import dk.ulfen.imageassert.appium.AppiumImageAssertion
+import org.openqa.selenium.By
+
+@Test
+fun `verify button appearance across devices`() {
+    val driver = getAppiumDriver()
+    val button = driver.findElement(By.id("submit-button"))
+    
+    // Same expected image works for different device resolutions
+    val expectedButton = File("src/test/resources/submit-button.png")
+    
+    // Automatically handles scaling for different screen sizes
+    AppiumImageAssertion.assertElementImageEquals(button, driver, expectedButton)
+}
+```
+
+### Appium Element with Custom Configuration
+
+```kotlin
+import dk.ulfen.imageassert.ImageAssertion
+import dk.ulfen.imageassert.appium.AppiumImageAssertion
+import org.openqa.selenium.By
+import java.io.File
+
+@Test
+fun `test element with tolerance for rendering differences`() {
+    val driver = getAppiumDriver()
+    val logo = driver.findElement(By.id("app-logo"))
+    val expectedLogo = File("src/test/resources/logo.png")
+    
+    // Allow 2% tolerance for minor rendering differences
+    val config = ImageAssertion.ComparisonConfig(tolerance = 0.02)
+    
+    AppiumImageAssertion.assertElementImageEquals(
+        logo, 
+        driver, 
+        expectedLogo, 
+        config
+    )
+}
+```
+
+### Direct Element Screenshot Capture
+
+```kotlin
+import dk.ulfen.imageassert.ImageAssertion
+import dk.ulfen.imageassert.appium.AppiumImageAssertion
+import org.openqa.selenium.By
+import java.io.File
+import javax.imageio.ImageIO
+
+@Test
+fun `capture and compare element screenshot`() {
+    val driver = getAppiumDriver()
+    val element = driver.findElement(By.id("profile-picture"))
+    
+    // Capture element screenshot as BufferedImage
+    val elementImage = AppiumImageAssertion.captureElementScreenshot(element, driver)
+    
+    // Use with standard ImageAssertion
+    val expectedImage = ImageIO.read(File("src/test/resources/profile.png"))
+    ImageAssertion.assertImageEquals(elementImage, expectedImage)
 }
 ```
 
