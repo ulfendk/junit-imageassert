@@ -175,6 +175,7 @@ The library includes built-in support for Appium UI element testing with automat
 ```kotlin
 import dk.ulfen.imageassert.appium.AppiumImageAssertion
 import io.appium.java_client.AppiumDriver
+import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 import java.io.File
 
@@ -198,6 +199,9 @@ fun `test mobile button appearance`() {
 ### Testing Across Different Devices
 
 ```kotlin
+import dk.ulfen.imageassert.appium.AppiumImageAssertion
+import org.openqa.selenium.By
+
 @Test
 fun `verify button appearance across devices`() {
     val driver = getAppiumDriver()
@@ -214,6 +218,11 @@ fun `verify button appearance across devices`() {
 ### Appium Element with Custom Configuration
 
 ```kotlin
+import dk.ulfen.imageassert.ImageAssertion
+import dk.ulfen.imageassert.appium.AppiumImageAssertion
+import org.openqa.selenium.By
+import java.io.File
+
 @Test
 fun `test element with tolerance for rendering differences`() {
     val driver = getAppiumDriver()
@@ -235,6 +244,12 @@ fun `test element with tolerance for rendering differences`() {
 ### Direct Element Screenshot Capture
 
 ```kotlin
+import dk.ulfen.imageassert.ImageAssertion
+import dk.ulfen.imageassert.appium.AppiumImageAssertion
+import org.openqa.selenium.By
+import java.io.File
+import javax.imageio.ImageIO
+
 @Test
 fun `capture and compare element screenshot`() {
     val driver = getAppiumDriver()
